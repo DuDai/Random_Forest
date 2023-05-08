@@ -50,12 +50,30 @@ cm = confusion_matrix(Y_Test, Y_Pred)
 print('confusion matrix:')
 print(cm)
 
-# 测试集准确率
-wrong = 0
+# 计算测试集Rec, Pre, f1, Acc
+# Rec=正确的正样本数/样本中的正样本数；Pre=正确的正样本数/预测为正例的样本数；f1=2*Rec*Pre/Rec+Pre。被攻击的为正样本，样本标签为1
+A = 0  # 预测为正，实际为正的样本数
+B = 0  # 预测为负，实际为正的样本数
+C = 0  # 预测为正，实际为负的样本数
+D = 0  # 预测为负，实际为负的样本数
+
 for e in range(0,len(Y_Test)):
     if Y_Pred[e] != Y_Test[e]:
-        wrong = wrong + 1
-    rate = 1 - wrong/100
-print('correct rate:')
-print(rate)
+        if Y_Test[e] == 1:
+            B = B + 1  # 预测为负，但实际为正
+        else:
+            C = C + 1  # 预测为正，但实际为负
+    else:
+        if Y_Test[e] == 1:
+            A = A + 1  # 预测为正，实际为正
+        else:
+            D = D + 1  # 预测为负实际为负
+Acc = (A + D)/(A + B + C + D)
+Rec = A/(A + B)
+Pre = A/(A + C)
+f1 = 2*Rec*Pre/(Rec + Pre)
+print('Accuracy: ', Acc)
+print('Recall: ', Rec)
+print('Precision: ', Pre)
+print('F1: ', f1)
 
